@@ -1,0 +1,16 @@
+{
+  "name": "music_visualizer",
+  "version": "1.0.0",
+  "description": "Three.js music visualizer with advanced audio-reactive elements.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "check": "tsc -p . --noEmit"
+  },
+  "dependencies": {
+    "three": "^0.164.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
