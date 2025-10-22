@@ -1,23 +1,31 @@
 # Music Visualizer Product Plan
 
-## Initial Product Requirements
-- Allow users to load or stream audio files (MP3, WAV) directly in the browser.
-- Provide real-time visual feedback synchronized with audio playback.
-- Offer playback controls (play, pause, seek) alongside visualization controls.
-- Support responsive layout that adapts to desktop and tablet viewports.
-- Enable users to toggle between different visualization modes as the product evolves.
+## Product Vision
+- Deliver a browser-based **Universal** (client + server-rendered) experience that feels native within the web and is effortless to deploy on Vercel.
+- Provide a curated demo showcase where visitors can choose from a pre-uploaded set of tracks hosted alongside the app.
+- Combine high-energy audio playback with immersive, multi-color 3D visualizations that feel performant on modern desktop and tablet hardware.
+
+## Updated Product Requirements
+- Host the production and preview environments on **Vercel**, wiring CI/CD to auto-build from the main branch.
+- Ship the core audio analysis logic as reusable modules that can be plugged into the Vercel-powered UX layer.
+- Allow visitors to select from a curated playlist (e.g., 5 demo songs) and stream them directly in the browser without local uploads.
+- Provide real-time playback controls (play, pause, seek, volume) synchronized with the visual experience.
+- Maintain responsive layouts that adapt fluidly from widescreen monitors down to tablets, preserving 3D immersion.
+- Prepare for future expansion toward user-uploaded tracks while ensuring licensing-friendly demo defaults.
 
 ## Target Platforms & Technology Stack
-- **Platforms:** Web-first experience optimized for desktop and tablet browsers.
+- **Platform & Hosting:** Next.js (app router) deployed on Vercel for universal rendering, edge caching, and preview links.
 - **Core Libraries & APIs:**
-  - [Vite](https://vitejs.dev/) for fast local development and build tooling.
-  - [React](https://react.dev/) for component-driven UI structure.
-  - Native **Web Audio API** to analyze audio data in real time.
-  - HTML5 `<canvas>` for drawing performant visualizations.
+  - React for component-driven UI and state orchestration.
+  - Web Audio API for frequency/time-domain analysis and audio control.
+  - Three.js + WebGL shaders for 3D rendering, particle effects, and color-rich animations.
+  - Zustand or Context API for synchronized playback + visualization state management.
+  - Tailwind CSS (or similar utility-first system) for rapid layout and theming iterations.
 
 ## First Visualization Concept
-Start with a simple animated **bar spectrum analyzer**:
-- Split the audio frequency data into ~32 bars using the Web Audio API's frequency data array.
-- Each bar's height corresponds to the amplitude of its frequency bin, easing up/down for smooth motion.
-- Apply subtle gradient fills and drop shadows for depth, with low-frequency bars wider for visual weight.
-- Include a baseline waveform glow beneath the bars to hint at future hybrid visualizations.
+Kick off with a **3D radial spectrum nebula**:
+- Create a circular arrangement of frequency bins extruded in 3D, pulsing outward based on amplitude.
+- Drive dynamic color gradients across the spectrum using audio-reactive palettes (e.g., low frequencies shift toward deep purples, highs toward electric cyans).
+- Overlay particle emitters that burst in sync with beat-detection heuristics derived from Web Audio temporal analysis.
+- Render subtle depth-of-field and bloom via post-processing passes to emphasize the "super cool" aesthetic.
+- Provide camera orbit controls (auto + user interaction) while safeguarding performance with adaptive quality settings.
