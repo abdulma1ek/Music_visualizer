@@ -33,6 +33,13 @@ A universal Next.js experience ready for Vercel that fuses curated audio playbac
 
 3. Open [http://localhost:3000](http://localhost:3000) to access the visualizer. Interact with the transport controls to grant audio permissions so the scene can react in real time.
 
+## Trying It Out
+
+- **Browser compatibility** – Use a Chromium- or WebKit-based browser that supports the Web Audio API, Pointer Lock, and WebGL 2 for smooth 3D rendering.
+- **User interaction** – Start playback with the transport controls to unlock the audio context; the harmonic observatory will animate as soon as analyser data flows.
+- **Visualization modes** – Toggle the mode switcher to explore the harmonic membrane, Fourier lattice, and Lissajous orbit presets without stopping the music.
+- **Playlist navigation** – Cycle through the curated tracks with previous/next controls to see how different timbres affect the visuals.
+
 ## Deployment
 
 - The project is optimized for Vercel. Commit changes to the main branch (or open a PR) and enable automatic deployments to preview environments.
