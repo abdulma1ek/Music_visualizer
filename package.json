@@ -1,5 +1,10 @@
 {
   "name": "music_visualizer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "node scripts/run-lint.js",
+    "build": "node scripts/run-build.js"
   "version": "1.0.0",
   "description": "Three.js music visualizer with advanced audio-reactive elements.",
   "type": "module",

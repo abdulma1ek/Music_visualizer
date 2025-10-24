@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "preview": true
+    },
+    "autoJobCancelation": true
+  },
+  "env": {
+    "DEMO_AUDIO_BASE_URL": "@demo-audio-base-url"
+  }
+}
