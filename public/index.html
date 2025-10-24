@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Visualizer Deployment Placeholder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+        background: linear-gradient(180deg, #111, #1f1f3a);
+        color: #fff;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+      }
+      a,
+      code {
+        color: #6ee7ff;
+      }
+      section {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+      }
+      ul {
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Music Visualizer Deployment Scaffold</h1>
+    <section>
+      <h2>What&rsquo;s configured?</h2>
+      <ul>
+        <li><strong>Vercel deployments</strong> are configured via <code>vercel.json</code> with preview deployments enabled for every branch.</li>
+        <li><strong>Demo audio assets</strong> can be pulled from the <code>DEMO_AUDIO_BASE_URL</code> environment variable or bundled from <code>public/demo-audio</code>.</li>
+        <li><strong>CI checks</strong> validate configuration and prepare static output before Vercel promotions.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Next steps</h2>
+      <p>
+        Replace this placeholder with the actual music visualizer app. The included Node build script simply copies the
+        contents of <code>public</code> to the <code>dist</code> directory so Vercel can serve it. Update
+        <code>scripts/run-build.js</code> once a real build pipeline exists.
+      </p>
+    </section>
+  </body>
+</html>
