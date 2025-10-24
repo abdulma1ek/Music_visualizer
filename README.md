@@ -1,30 +1,47 @@
-# Music Visualizer deployment scaffold
+# Music Visualizer
 
-This repository is pre-configured for Vercel preview deployments, demo audio asset management, and CI/CD checks that gate
-production promotions.
+This project provides a Three.js-powered music visualizer with reusable audio analysis hooks and a richly layered scene. The visualizer is exposed via `createVisualizerScene` in `app/visualizer/index.ts` and can be embedded in any web application that supplies a canvas and audio source.
 
-## Deployment
+## Features
 
-- `vercel.json` sets `npm run build` as the build command and publishes the `dist` directory.
-- Preview deployments are enabled for every branch while the `main` branch represents production.
-- Import the project into Vercel via “Import Third-Party Git Repository” and point at this repository URL.
+- **Audio hooks** – Utilities for creating analysers, sampling frequency/time-domain data, and detecting beats (`app/visualizer/audio/hooks.ts`).
+- **Waveform membrane** – A polar grid surface that displaces in the Z axis using the current waveform (`app/visualizer/geometry/waveformMembrane.ts`).
+- **Fourier lattice & ribbons** – Instanced helical bars and spline ribbons animated from frequency magnitudes (`app/visualizer/geometry/fourierStructures.ts`).
+- **Lissajous tracer particles** – Shader-driven particle system with gradient bloom reacting to beat strength (`app/visualizer/geometry/lissajousParticles.ts`).
+- **Camera presets** – Auto-orbit, free-fly, and orthographic rigs with level-of-detail safeguards (`app/visualizer/controls/cameraPresets.ts`, `app/visualizer/utils/lod.ts`).
+- **Post-processing** – Bloom and exponential fog pipeline (`app/visualizer/effects/postProcessing.ts`).
 
-Additional deployment notes live in [`docs/deployment/vercel.md`](docs/deployment/vercel.md).
+## Usage
 
-## Demo audio configuration
+```ts
+import { createVisualizerScene } from './app/visualizer/index';
 
-- Provide a `DEMO_AUDIO_BASE_URL` environment variable (see `.env.example`) to point at a remote bucket containing curated demo
-  audio.
-- Lightweight demo files can be stored directly in `public/demo-audio/`; they are copied into `dist` during the build step.
-- The build script emits `dist/demo-audio-manifest.json` capturing the base URL used for the deployment.
+const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+const audio = document.querySelector('audio') as HTMLAudioElement;
 
-## CI/CD checks
+const visualizer = await createVisualizerScene({
+  canvas,
+  audioElement: audio,
+  cameraPreset: 'autoOrbit',
+});
 
-GitHub Actions workflow [`ci.yml`](.github/workflows/ci.yml) runs on pushes and pull requests:
+// Switch camera presets on demand
+visualizer.setCameraPreset('freeFly');
 
-1. Installs Node.js dependencies.
-2. Executes configuration lint checks via `npm run lint`.
-3. Builds the static output via `npm run build`.
-4. Uploads the `dist` directory as an artifact so it can be inspected if the build fails.
+// Stop or dispose when no longer needed
+visualizer.stop();
+visualizer.dispose();
+```
 
-Protect the `main` branch in GitHub so that Vercel promotions wait for these checks before deploying to production.
+The visualizer automatically starts rendering unless `autoStart` is set to `false`. To customise bloom, fog, or camera settings, supply the respective option objects to `createVisualizerScene`.
+
+## Development
+
+Install dependencies and type-check the project:
+
+```bash
+npm install
+npm run check
+```
+
+> **Note:** In network-restricted environments you may need to supply an alternate npm registry to fetch `three` and `typescript`.
