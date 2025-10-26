@@ -30,11 +30,11 @@ if (vercelConfig) {
   if (vercelConfig.version !== 2) {
     issues.push('vercel.json must specify "version": 2 for the current deployment platform.');
   }
-  if (vercelConfig.buildCommand !== 'npm run build') {
-    issues.push('vercel.json buildCommand should be "npm run build" to use the repository build script.');
+  if (vercelConfig.buildCommand && vercelConfig.buildCommand !== 'npm run build') {
+    issues.push('vercel.json buildCommand should use "npm run build" so deployments mirror local builds.');
   }
-  if (vercelConfig.outputDirectory !== 'dist') {
-    issues.push('vercel.json outputDirectory should be "dist" so the generated static site is published.');
+  if (typeof vercelConfig.outputDirectory !== 'undefined' && vercelConfig.outputDirectory !== '.next') {
+    issues.push('vercel.json outputDirectory should be omitted or set to ".next" for standard Next.js deployments.');
   }
   if (!vercelConfig.git || !vercelConfig.git.deploymentEnabled || vercelConfig.git.deploymentEnabled.preview !== true) {
     issues.push('vercel.json must enable preview deployments for non-production branches.');
