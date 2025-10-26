@@ -29,7 +29,13 @@ export function NowPlayingCard() {
     >
       <div className="relative z-10 flex items-center gap-5">
         <div className="relative h-28 w-28 overflow-hidden rounded-xl border border-white/20 shadow-lg">
-          <Image src={track.coverImage} alt={track.title} fill className="object-cover" sizes="112px" />
+          {track.coverImage ? (
+            <Image src={track.coverImage} alt={track.title} fill className="object-cover" sizes="112px" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-white/5 text-xs uppercase tracking-widest text-white/60">
+              No Artwork
+            </div>
+          )}
         </div>
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-widest text-white/60">Now Playing</p>

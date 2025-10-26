@@ -1,89 +1,110 @@
 # Music Visualizer
 
-A Next.js (App Router) demo that showcases a responsive audio player with real-time Web Audio visualizations, curated sample tracks, and Tailwind-powered layout primitives. Zustand manages playback and visualization settings globally so the player remains synchronized across the application shell.
+A Next.js (App Router) demo that pairs a curated audio playlist with a real-time Three.js scene. Zustand keeps playback state, visualizer mode, and UI controls in sync while Web Audio analyser nodes stream data into the shaders.
 
 ## Getting started
 
 ```bash
-pnpm install    # or npm install / yarn install
-pnpm dev        # start the development server
+npm install
+npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
+Visit [http://localhost:3000](http://localhost:3000) to explore the visualizer.
 
 ## Available scripts
 
-- `pnpm dev` – start the Next.js development server.
-- `pnpm build` – create an optimized production build.
-- `pnpm start` – run the production build.
-- `pnpm lint` – execute ESLint using Next.js defaults.
+- `npm run dev` – launch the development server.
+- `npm run build` – produce an optimized production build.
+- `npm run start` – serve the production bundle.
+- `npm run lint` – run ESLint with the Next.js ruleset.
+- `npm run check` – type-check the project with `tsc`.
 
 ## Tech stack
 
-- **Next.js App Router** with TypeScript for routing and type safety.
-- **Tailwind CSS** and custom layout primitives for adaptive tablet/desktop design.
-- **Zustand** store provided through `app/providers.tsx` for playback + visualization state.
-- **Web Audio API** integration in `app/player/useAudioEngine.ts` to drive playback, analyser nodes, and visual feedback.
+- **Next.js App Router** with TypeScript.
+- **Tailwind CSS** for theming plus custom “glass” utility classes.
+- **Zustand** store in `lib/store/playerStore.ts` for transport, playlist, and visualization state.
+- **Web Audio API** handled by `lib/audio/useAudioController.ts`, exposed through the `AppProviders` context.
+- **Three.js** rendering via `components/visualizer/HarmonicObservatory.tsx`.
 
 ## Project structure
 
 ```
 app/
-  layout.tsx         # global shell, providers, and navigation
-  page.tsx           # overview/landing screen
-  player/            # player route, audio engine hook, UI
+  layout.tsx         # Fonts, global providers, shell
+  page.tsx           # Landing page with condensed player + visualizer
+  player/            # Immersive player route
+  providers.tsx      # AppProviders + audio engine context
 components/
-  layout/            # responsive shell + section helpers
-  player/            # visualizer canvas
-  ui/                # buttons, icons, primitives
+  player/            # Playback controls, playlist, cards
+  ui/                # Icons and primitives
+  visualizer/        # Three.js scene integration
 lib/
-  classNames.ts      # helper utilities
-  formatDuration.ts
+  audio/             # Web Audio controller hook
+  store/             # Zustand store for playback + visualization state
+  visualization/     # Shared constants
 ```
 
-Static audio assets are streamed from royalty-free sample URLs so the player works without bundling media files.
-This project provides a Three.js-powered music visualizer with reusable audio analysis hooks and a richly layered scene. The visualizer is exposed via `createVisualizerScene` in `app/visualizer/index.ts` and can be embedded in any web application that supplies a canvas and audio source.
+Demo audio assets stream from royalty-free sources by default. For production deployments you can set `DEMO_AUDIO_BASE_URL` to point at your own storage bucket.
 
-## Features
+## Custom playlist
 
-- **Audio hooks** – Utilities for creating analysers, sampling frequency/time-domain data, and detecting beats (`app/visualizer/audio/hooks.ts`).
-- **Waveform membrane** – A polar grid surface that displaces in the Z axis using the current waveform (`app/visualizer/geometry/waveformMembrane.ts`).
-- **Fourier lattice & ribbons** – Instanced helical bars and spline ribbons animated from frequency magnitudes (`app/visualizer/geometry/fourierStructures.ts`).
-- **Lissajous tracer particles** – Shader-driven particle system with gradient bloom reacting to beat strength (`app/visualizer/geometry/lissajousParticles.ts`).
-- **Camera presets** – Auto-orbit, free-fly, and orthographic rigs with level-of-detail safeguards (`app/visualizer/controls/cameraPresets.ts`, `app/visualizer/utils/lod.ts`).
-- **Post-processing** – Bloom and exponential fog pipeline (`app/visualizer/effects/postProcessing.ts`).
+1. Host your audio files (and optional artwork) under the URL you will assign to `DEMO_AUDIO_BASE_URL`.  
+2. Create a `playlist.json` file alongside the assets. Example:
 
-## Usage
+   ```json
+   {
+     "tracks": [
+       {
+         "id": "custom-track",
+         "title": "Custom Track Title",
+         "artist": "Artist Name",
+         "src": "custom-track.mp3",
+         "coverImage": "artwork/custom-track.jpg",
+         "accent": "#4cc9f0",
+         "description": "Optional blurb about the song"
+       }
+     ]
+   }
+   ```
 
-```ts
-import { createVisualizerScene } from './app/visualizer/index';
+   Relative paths in `src` or `coverImage` are resolved against `DEMO_AUDIO_BASE_URL`. Absolute HTTPS URLs work as well.
+3. Set `DEMO_AUDIO_BASE_URL` in `.env` (and on your hosting platform) to the base folder that contains `playlist.json`.
+4. Restart the dev server or redeploy. The player falls back to the bundled demo tracks if the manifest can’t be fetched.
 
-const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-const audio = document.querySelector('audio') as HTMLAudioElement;
+### Single-track override
 
-const visualizer = await createVisualizerScene({
-  canvas,
-  audioElement: audio,
-  cameraPreset: 'autoOrbit',
-});
+If you only need one song and don’t want to host a playlist manifest, populate the optional
+`DEMO_AUDIO_TRACK_*` variables in `.env`:
 
-// Switch camera presets on demand
-visualizer.setCameraPreset('freeFly');
-
-// Stop or dispose when no longer needed
-visualizer.stop();
-visualizer.dispose();
+```
+DEMO_AUDIO_TRACK_SRC=https://example-storage.com/audio/night-drive.mp3
+DEMO_AUDIO_TRACK_TITLE=Night Drive
+DEMO_AUDIO_TRACK_ARTIST=Abdul Malik
+DEMO_AUDIO_TRACK_COVER=https://example-storage.com/audio/art/night-drive.jpg
+DEMO_AUDIO_TRACK_ACCENT=#ff6b6b
+DEMO_AUDIO_TRACK_DESCRIPTION=Synthwave vibes for the road.
+DEMO_AUDIO_TRACK_DURATION=228
 ```
 
-The visualizer automatically starts rendering unless `autoStart` is set to `false`. To customise bloom, fog, or camera settings, supply the respective option objects to `createVisualizerScene`.
+Relative paths are supported when `DEMO_AUDIO_BASE_URL` points to a folder; otherwise use absolute URLs.
+If both `playlist.json` and the single-track variables are unavailable, the app defaults to the bundled demo playlist.
 
-## Development
+## Uploading tracks at runtime
 
-Install dependencies and type-check the project:
+- Set `BLOB_READ_WRITE_TOKEN` in your environment (create one with `vercel blob generate-token`).
+- Visit `/upload` while the dev server is running. The form uploads audio (and optional artwork) to Vercel Blob via `/api/tracks/upload`.
+- Successful uploads append a new entry to the in-memory playlist and start playback immediately; the data only persists for the current session unless you copy the generated blob URLs into a playlist manifest.
 
-```bash
-npm install
-npm run check
-```
+## Visualizer engine
 
-> **Note:** In network-restricted environments you may need to supply an alternate npm registry to fetch `three` and `typescript`.
+The reusable Three.js scene lives under `app/visualizer/`:
+
+- **Audio hooks** – analyser helpers in `app/visualizer/audio/hooks.ts`.
+- **Waveform membrane** – polar surface displacement (`app/visualizer/geometry/waveformMembrane.ts`).
+- **Fourier lattice & ribbons** – instanced geometry animated from FFT data (`app/visualizer/geometry/fourierStructures.ts`).
+- **Lissajous particles** – gradient tracer system (`app/visualizer/geometry/lissajousParticles.ts`).
+- **Camera presets & LOD** – orbit and free-fly rigs with safeguards (`app/visualizer/controls/cameraPresets.ts`, `app/visualizer/utils/lod.ts`).
+- **Post-processing** – bloom + fog pipeline (`app/visualizer/effects/postProcessing.ts`).
+
+The scene can be embedded elsewhere by importing `createVisualizerScene` from `app/visualizer/index.ts`.

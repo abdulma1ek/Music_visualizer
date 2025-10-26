@@ -9,9 +9,10 @@ export interface TrackMeta {
   title: string;
   artist: string;
   src: string;
-  coverImage: string;
+  coverImage?: string;
   description?: string;
-  accent: string;
+  accent?: string;
+  duration?: number;
 }
 
 interface PlayerState {
@@ -33,6 +34,7 @@ interface PlayerState {
   setVisualizationMode: (mode: VisualizationMode) => void;
   playNext: () => void;
   playPrevious: () => void;
+  addTrack: (track: TrackMeta) => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -67,5 +69,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (!playlist.length) return;
     const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
     set({ currentIndex: prevIndex, progress: 0, duration: 0 });
-  }
+  },
+  addTrack: (track) =>
+    set((state) => {
+      const playlist = [...state.playlist, track];
+      return { playlist };
+    })
 }));

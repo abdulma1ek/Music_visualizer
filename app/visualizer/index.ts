@@ -81,7 +81,6 @@ export async function createVisualizerScene(options: VisualizerOptions): Promise
   const analyser = await prepareAnalyser(options);
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.shadowMap.enabled = true;
-  renderer.physicallyCorrectLights = true;
 
   const { width, height } = resolveCanvasSize(canvas);
   const devicePixelRatio = Math.min(options.dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio : 1), 2.5);

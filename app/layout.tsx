@@ -1,33 +1,9 @@
-import "./globals.css";
-
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-
-import { Providers } from "./providers";
-import { AppShell } from "@/components/layout/AppShell";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-
-export const metadata: Metadata = {
-  title: "Music Visualizer",
-  description: "Interactive audio visualizer demo built with Next.js"
-};
-
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" className={inter.variable}>
-      <body className="bg-slate-950 text-slate-50">
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
 import { AppProviders } from './providers';
+import { TopNav } from '@/components/ui/TopNav';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -39,10 +15,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}> 
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <body className="min-h-screen font-sans text-white antialiased">
         <AppProviders>
-          <div className="min-h-screen">{children}</div>
+          <div className="relative flex min-h-screen flex-col">
+            <TopNav />
+            <main className="flex-1">
+              <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-12 lg:px-10">{children}</div>
+            </main>
+          </div>
         </AppProviders>
       </body>
     </html>
